@@ -1,13 +1,22 @@
 import React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import SalesforceRecordsTable from "./SalesforceRecordsTable.jsx"
 
 const API_URL = "http://localhost:8000/user_query"
+const CONFIG_URL = "http://localhost:8000/config"
 
 function App() {
   const [userNlpQuery, setUserNlpQuery] = useState("")
   const [messages, setMessages] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [llmTarget, setLlmTarget] = useState("Claude")
+
+  useEffect(() => {
+    fetch(CONFIG_URL)
+      .then((res) => res.json())
+      .then((data) => setLlmTarget(data.llm_target))
+      .catch(() => {})
+  }, [])
 
   const onSubmit = async (event) => {
     event.preventDefault()
@@ -40,7 +49,7 @@ function App() {
 
   return (
     <main className="container">
-      <h1>Chat Claude</h1>
+      <h1>Chat {llmTarget}</h1>
       <section className="messages">
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.role}`}>

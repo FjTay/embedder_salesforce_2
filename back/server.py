@@ -2,6 +2,7 @@ import fastapi
 import fastapi.middleware.cors
 import uvicorn
 
+import config
 import router.user_query
 
 
@@ -14,6 +15,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(router.user_query.router)
+
+
+@app.get("/config")
+def get_config():
+    return {"llm_target": config.llm_target}
 
 
 if __name__ == "__main__":
